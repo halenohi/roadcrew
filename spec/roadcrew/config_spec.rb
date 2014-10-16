@@ -1,4 +1,4 @@
-require 'roadcrew_spec'
+require 'spec_helper'
 
 describe Roadcrew::Config do
   let(:config) { Roadcrew::Config.new {} }

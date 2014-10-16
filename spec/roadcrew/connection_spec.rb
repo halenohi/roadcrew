@@ -1,4 +1,4 @@
-require 'roadcrew_spec'
+require 'spec_helper'
 
 describe Roadcrew::Connection do
   let(:access_token) { double 'AccessToken' }
