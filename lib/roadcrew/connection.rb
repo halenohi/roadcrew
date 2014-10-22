@@ -3,10 +3,10 @@ module Roadcrew
     REST_ACTIONS = %w(get post put patch delete)
 
     def initialize(options)
-      @client_id = options.delete(:client_id)
-      @client_secret = options.delete(:client_secret)
-      @site = options.delete(:endpoint)
-      @token = options.delete(:access_token)
+      @client_id = options[:client_id]
+      @client_secret = options[:client_secret]
+      @site = options[:endpoint]
+      @token = options[:access_token]
       @oauth_client = OAuth2::Client.new(@client_id, @client_secret, site: @site)
     end
 
