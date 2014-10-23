@@ -16,7 +16,7 @@ module Roadcrew
 
     def method_missing(method, *args)
       if REST_ACTIONS.include? method.to_s
-        access_token.send(method, *args).parsed
+        access_token.send(method, *args)
       else
         super
       end
