@@ -19,10 +19,10 @@ describe Roadcrew::Client do
   end
 
   describe '.garage' do
-    it '指定したgarageの@clientが設定されること' do
+    it '指定したgarageの@garage_clientが設定されること' do
       expect(Roadcrew::Connection).to receive(:new).with(endpoint: 'http://example.com') { connection }
       SimpleModel.garage :sample_garage
-      expect(SimpleModel.instance_variable_get(:@client)).to eq connection
+      expect(SimpleModel.garage_client).to eq connection
     end
   end
 

@@ -5,13 +5,16 @@ module Roadcrew
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def garage(name)
-        options = Roadcrew.configuration.garages[name.to_sym]
-        @client = Roadcrew::Connection.new(options)
+      attr_reader :garage_client
+
+      def inherited(child)
+        child.instance_variable_set(:@garage_client, @garage_client)
+        child.instance_variable_set(:@base_path, @base_path)
       end
 
-      def garage_client
-        @client
+      def garage(name)
+        options = Roadcrew.configuration.garages[name.to_sym]
+        @garage_client = Roadcrew::Connection.new(options)
       end
 
       def base_path(name = nil)
