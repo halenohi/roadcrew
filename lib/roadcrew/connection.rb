@@ -9,7 +9,7 @@ module Roadcrew
       @client_secret = options[:client_secret]
       @site = options[:endpoint]
       @token = options[:access_token]
-      @ssl = options[:ssl] || true
+      @ssl = options[:ssl] || { verify: true }
       @oauth_client = OAuth2::Client.new(@client_id, @client_secret, site: @site, ssl: @ssl)
       @cache_expires_in = options[:cache_expires_in] || 1.hours
     end
