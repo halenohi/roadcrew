@@ -29,8 +29,9 @@ module Roadcrew
       end
 
       def add(hash)
-        options = hash.to_a[0]
-        @collection.store(options[0], options[1])
+        key, options = hash.to_a[0]
+        options = @collection[key].merge(options) if @collection[key]
+        @collection[key] = options
       end
 
       def [](name)
