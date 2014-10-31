@@ -1,6 +1,7 @@
 module Roadcrew
   def self.configure(&block)
-    @config = Config.new(&block)
+    @config ||= Config.new(&block)
+    @config.with(&block)
   end
 
   def self.configuration
@@ -10,8 +11,11 @@ module Roadcrew
   class Config
     attr_reader :garages
 
-    def initialize(&block)
+    def initialize
       @garages = Garages.new
+    end
+
+    def with(&block)
       instance_eval(&block)
     end
 
