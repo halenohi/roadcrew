@@ -47,7 +47,7 @@ module Roadcrew
       end
 
       def log(*args)
-        if defined? ::Rails
+        if defined?(::Rails) && ::Rails.logger
           ::Rails.logger.info "[Roadcrew] ssl: #{ @ssl }, site: #{ @site }, args: #{ args.map(&:inspect) }"
         end
       end
