@@ -21,15 +21,32 @@ module Roadcrew
     def method_missing(method, *args)
       if REST_ACTIONS.include? method.to_s
         if Rails.cache
-          Rails.cache.fetch "Roadcrew_#{ @site }#{ args[0] }_#{ method }", expires_in: cache_expires_in, skip_digest: true do
+          Rails.cache.fetch(cache_key, cache_options) do
+            log(method, args)
             access_token.send(method, *args)
           end
         else
+          log(method, args)
           access_token.send(method, *args)
         end
       else
         super
       end
     end
+
+    private
+      def cache_key(method, args)
+        "Roadcrew_#{ @site }#{ args[0] }_#{ method }"
+      end
+
+      def cache_options
+        { expires_in: cache_expires_in, skip_digest: true }
+      end
+
+      def log(*args)
+        if defined? ::Rails
+          ::Rails.logger.info "[Roadcrew] #{ args.map(&:inspect) }"
+        end
+      end
   end
 end
