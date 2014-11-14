@@ -22,16 +22,19 @@ module Roadcrew
       if REST_ACTIONS.include? method.to_s
         if Rails.cache
           Rails.cache.fetch(cache_key, cache_options) do
-            log(method, args)
-            access_token.send(method, *args)
+            request_with_access_token(method, args)
           end
         else
-          log(method, args)
-          access_token.send(method, *args)
+          request_with_access_token(method, args)
         end
       else
         super
       end
+    end
+
+    def request_with_access_token(method, args)
+      log(method, args)
+      access_token.send(method, *args)
     end
 
     private
