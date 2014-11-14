@@ -20,8 +20,8 @@ module Roadcrew
 
     def method_missing(method, *args)
       if REST_ACTIONS.include? method.to_s
-        if Rails.cache
-          Rails.cache.fetch(cache_key, cache_options) do
+        if defined?(::Rails) && ::Rails.cache
+          ::Rails.cache.fetch(cache_key, cache_options) do
             request_with_access_token(method, args)
           end
         else
