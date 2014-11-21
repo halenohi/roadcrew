@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 4.1.5"
   s.add_dependency "oauth2"
+  s.add_dependency "slim"
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec", "~> 3.0.0"
