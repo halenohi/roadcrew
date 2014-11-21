@@ -1,0 +1,11 @@
+= form_tag login_path, class: 'form col-sm-4 col-sm-offset-4' do |f|
+  .form-group
+    = label_tag :email
+    = email_field_tag :email, '', class: 'form-control'
+
+  .form-group
+    = label_tag :password
+    = password_field_tag :password, '', class: 'form-control'
+
+  .form-group
+    = submit_tag 'Login', class: 'btn btn-primary'
