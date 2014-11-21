@@ -38,7 +38,7 @@ module Roadcrew
 
       def not_authenticated
         session.delete(SESSION_AUTH_KEY)
-        redirect_to defined?(login_path) ? login_path : '/'
+        redirect_to roadcrew.login_path
       end
   end
 end
