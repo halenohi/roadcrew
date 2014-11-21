@@ -11,6 +11,18 @@ module Roadcrew
   class Config
     attr_reader :garages
 
+    ATTR_NAMES = %w(
+      view_layout_name
+      after_logged_in_redirect_path_method
+    ).freeze
+
+    ATTR_NAMES.each do |attr_name|
+      define_method attr_name do |value = nil|
+        instance_variable_set("@#{ attr_name }", value) if value.present?
+        instance_variable_get("@#{ attr_name }")
+      end
+    end
+
     def initialize
       @garages = Garages.new
     end
