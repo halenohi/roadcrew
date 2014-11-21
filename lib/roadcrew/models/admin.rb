@@ -12,12 +12,12 @@ module Roadcrew
 
       def logged_in?
         return false if @token == nil
-        response = garage_client.get(build_path("/user_sessions/#{ @token }"), cache_expires_in: -1, raise_errors: false)
+        response = request(:get, "/user_sessions/#{ @token }")
         response.status == 200
       end
 
       def login(credentials = {})
-        response = garage_client.post(build_path('/user_sessions'), params: credentials, cache_expires_in: -1, raise_errors: false)
+        response = request(:post, '/user_sessions', params: credentials)
         if response.status == 201
           response.parsed['authentication_token']
         else
@@ -26,9 +26,21 @@ module Roadcrew
       end
 
       def logout
-        response = garage_client.delete(build_path("/user_sessions/#{ @token }"), cache_expires_in: -1, raise_errors: false)
+        response = request(:delete, "/user_sessions/#{ @token }")
         response.status == 204
       end
+
+      private
+        def request_options
+          {
+            cache_expires_in: -1,
+            raise_errors: false
+          }
+        end
+
+        def request(verb, path, params = {})
+          garage_client.send(verb, build_path(path), request_options.merge(params))
+        end
     end
   end
 end
