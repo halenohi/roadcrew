@@ -27,12 +27,12 @@ module Roadcrew
       end
 
       def admin_class
-        unless @admin_class_garagelized
+        unless (@@admin_class_garagelized ||= false)
           Models::Admin.tap do |a|
             a.garage :admin
             a.base_path '/api'
           end
-          @admin_class_garagelized = true
+          @@admin_class_garagelized = true
         end
         Models::Admin
       end
