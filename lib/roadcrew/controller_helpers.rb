@@ -30,7 +30,7 @@ module Roadcrew
       end
 
       def logout
-        Roadcrew::Authenticator.logout(raodcrew_auth)
+        Roadcrew::Authenticator.logout(roadcrew_auth)
         not_authenticated
       end
 
