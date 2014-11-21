@@ -19,8 +19,13 @@ module Roadcrew
     end
 
     def method_missing(method, *args)
+      options = args[1]
+      if options.is_a?(Hash) && options[:cache_expires_in]
+        cache_expires_in = options[:cache_expires_in]
+      end
+
       if REST_ACTIONS.include? method.to_s
-        if defined?(::Rails) && ::Rails.cache
+        if defined?(::Rails) && ::Rails.cache && cache_expires_in > -1
           ::Rails.cache.fetch(cache_key(method, args), cache_options) do
             request_with_access_token(method, args)
           end
