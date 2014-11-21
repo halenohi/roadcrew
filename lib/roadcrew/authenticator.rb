@@ -1,5 +1,5 @@
 module Roadcrew
-  class Authenticator
+  module Authenticator
     class << self
       def authenticate!(auth = {})
         auth = {} if auth.nil?
