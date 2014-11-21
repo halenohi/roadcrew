@@ -147,7 +147,7 @@ describe Roadcrew::ControllerHelpers do
   describe '#not_authenticated' do
     before do
       fake_controller.session[auth_key] = 'sample auth'
-      expect(fake_controller).to receive(:redirect_to).with('login_path')
+      expect(fake_controller).to receive(:redirect_to).with('/login')
       fake_controller.send(:not_authenticated)
     end
 
