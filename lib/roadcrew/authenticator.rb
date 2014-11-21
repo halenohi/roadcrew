@@ -7,12 +7,12 @@ module Roadcrew
         raise_error if auth['token'] == nil || !admin.logged_in?
       end
 
-      def login!(credentials)
+      def login!(credentials, &block)
         admin = admin_class.new
         token = admin.login(credentials)
 
         auth = token ? { 'token' => token } : false
-        yield(auth)
+        block.call(auth)
 
         raise_error unless auth
         auth
