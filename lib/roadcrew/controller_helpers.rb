@@ -8,6 +8,8 @@ module Roadcrew
       rescue_from Roadcrew::NotAuthenticatedError do
         not_authenticated
       end
+
+      helper_method :roadcrew_admin?
     end
 
     private
