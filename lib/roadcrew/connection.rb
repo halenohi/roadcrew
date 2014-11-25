@@ -53,8 +53,19 @@ module Roadcrew
 
       def log(*args)
         if defined?(::Rails) && ::Rails.logger
-          ::Rails.logger.info "[Roadcrew] ssl: #{ @ssl }, site: #{ @site }, args: #{ args.map(&:inspect) }"
+          ::Rails.logger.info "[Roadcrew] ssl: #{ @ssl }, site: #{ @site }, args: #{ mask_password(args).map(&:inspect) }"
         end
+      end
+
+      def mask_password(args)
+        args.map{ |arg|
+          next arg unless arg.is_a?(Hash)
+          arg.inject({}){ |res, (k, v)|
+            v = '[FILTERD]' if k.to_s.include?('password')
+            res[k] = v
+            res
+          }
+        }
       end
   end
 end
