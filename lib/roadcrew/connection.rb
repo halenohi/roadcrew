@@ -53,7 +53,7 @@ module Roadcrew
 
       def log(*args)
         if defined_rails_logger?
-          ::Rails.logger.info "[Roadcrew] ssl: #{ @ssl }, site: #{ @site }, args: #{ mask_password(args).map(&:inspect) }"
+          ::Rails.logger.info "[Roadcrew] ssl: #{ @ssl }, site: #{ @site }, args: #{ args[0..1] }"
         end
       end
 
