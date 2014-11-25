@@ -19,7 +19,7 @@ module Roadcrew
       end
 
       def logout(auth)
-        admin_class.new(auth[:token]).logout
+        admin_class.new(auth['token']).logout
       end
 
       def raise_error
