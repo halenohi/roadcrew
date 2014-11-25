@@ -25,7 +25,7 @@ class Roadcrew::UserSessionsController < Roadcrew::ApplicationController
 
   private
     def require_not_logged_in
-      redirect_to admin_root_path if roadcrew_admin?
+      redirect_to after_logged_in_path if roadcrew_admin?
     end
 
     def after_logged_in_path
