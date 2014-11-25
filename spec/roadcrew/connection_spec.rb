@@ -48,17 +48,18 @@ describe Roadcrew::Connection do
 
   describe '#mask_password' do
     subject do
-      connection.send(:mask_password, [:hoge, password: 'hogehoge'])
+      connection.send(:mask_password, [:hoge, params: { password: 'hogehoge' }])
     end
 
     it 'mask password value' do
-      expect(subject).to eq([:hoge, password: '[FILTERD]'])
+      expect(subject).to eq([:hoge, params: { password: '[FILTERD]' }])
     end
   end
 
   describe '#log' do
     before do
       stub_const('Rails', rails_module)
+      allow(connection).to receive(:defined_rails_logger?).and_return(true)
     end
 
     subject do
