@@ -52,7 +52,7 @@ module Roadcrew
       end
 
       def all
-        modelize(garage_client.get(build_path).map { |res| new(res) })
+        modelize(garage_client.get(build_path))
       end
     end
 
