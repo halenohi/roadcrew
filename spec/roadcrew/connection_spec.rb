@@ -6,15 +6,36 @@ describe Roadcrew::Connection do
   let(:connection) { Roadcrew::Connection.new(access_token: 'sample_token', endpoint: 'http://example.com/api/') }
   let(:rails_module) { double('Rails module').as_null_object }
 
+  class FakeRailsCache
+    def fetch(*args, &block)
+      block.call
+    end
+  end
+
   before do
     allow(OAuth2::AccessToken).to receive(:new)
       .with(be_kind_of(OAuth2::Client), 'sample_token') { access_token }
+
+    allow_any_instance_of(Roadcrew::Connection).to receive(:defined_rails_cache?).and_return(true)
+    allow(rails_module).to receive(:cache).and_return(FakeRailsCache.new)
+    stub_const('Rails', rails_module)
   end
 
   describe '#get' do
     it 'OAuth2::AccessTokenに正しい引数を渡すこと' do
       expect(access_token).to receive(:get).with('/users') { response }
       expect(connection.get('/users')).to eq response
+    end
+
+    context 'cache_expires_inオプションを渡した場合' do
+      subject do
+        -> { connection.get('/users', cache_expires_in: -1) }
+      end
+
+      it '例外が発生しないこと' do
+        expect(access_token).to receive(:get).with('/users', cache_expires_in: -1) { response }
+        expect(subject).to_not raise_error
+      end
     end
   end
 
@@ -58,7 +79,6 @@ describe Roadcrew::Connection do
 
   describe '#log' do
     before do
-      stub_const('Rails', rails_module)
       allow(connection).to receive(:defined_rails_logger?).and_return(true)
     end
 
