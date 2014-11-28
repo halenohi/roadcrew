@@ -168,7 +168,9 @@ describe Roadcrew::ClientProperty do
     it 'propertyに満たない場合はエラーになること' do
       SimpleModel.instance_variable_set :@properties, { id: 'Integer', title: 'String' }
       expect{SimpleModel.new(id: '21')}.to raise_error Roadcrew::ClientProperty::InvalidAttributes
+      expect{SimpleModel.new('id' => '21', 'title' => 'sample', 'date' => '2013-05-16')}.to_not raise_error
       expect(SimpleModel.new(id: '21', title: 'sample', date: '2013-05-16')).to be_an_instance_of SimpleModel
+      expect(SimpleModel.new('id' => '21', 'title' => 'sample', 'date' => '2013-05-16')).to be_an_instance_of SimpleModel
     end
   end
 end

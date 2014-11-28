@@ -89,6 +89,7 @@ module Roadcrew
     end
 
     def initialize(attrs = {})
+      attrs = attrs.symbolize_keys
       raise Roadcrew::ClientProperty::InvalidAttributes unless is_valid?(attrs)
 
       @params = {}
