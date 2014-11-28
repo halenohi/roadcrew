@@ -33,7 +33,8 @@ module Roadcrew
       def build_path(id = nil)
         return if base_path.nil?
         path = "#{ base_path }"
-        path << "/#{ id }" unless id.nil?
+        path << '/' if id && !id.to_s.start_with?('/')
+        path << "#{ id }" if id
         path
       end
 

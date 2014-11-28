@@ -12,12 +12,12 @@ module Roadcrew
 
       def logged_in?
         return false if @token == nil
-        response = request(:get, "user_sessions/#{ @token }")
+        response = request(:get, "/user_sessions/#{ @token }")
         response.status == 200
       end
 
       def login(credentials = {})
-        response = request(:post, 'user_sessions', params: credentials)
+        response = request(:post, '/user_sessions', params: credentials)
         if response.status == 201
           response.parsed['authentication_token']
         else
@@ -26,7 +26,7 @@ module Roadcrew
       end
 
       def logout
-        response = request(:delete, "user_sessions/#{ @token }")
+        response = request(:delete, "/user_sessions/#{ @token }")
         response.status == 204
       end
 
