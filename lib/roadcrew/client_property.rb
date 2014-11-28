@@ -68,6 +68,23 @@ module Roadcrew
         end
       end
 
+      def cast_as_hash(value)
+        case value
+        when Hash
+          value
+        when Array
+          Hash[value]
+        end
+      end
+
+      def cast_as_array(value)
+        if value.respond_to? :to_a
+          value.to_a
+        elsif value.present?
+          [value]
+        end
+      end
+
       def cast_as_boolean(value)
         case value
         when 'true', '1'

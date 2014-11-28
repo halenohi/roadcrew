@@ -122,6 +122,25 @@ describe Roadcrew::ClientProperty do
       end
     end
 
+    describe 'hash' do
+      it 'Hashを返すこと' do
+        expect(SimpleModel.cast_as_hash('sample')).to be nil
+        expect(SimpleModel.cast_as_hash('31')).to eq nil
+        expect(SimpleModel.cast_as_hash(test: :sample)).to eq(test: :sample)
+        expect(SimpleModel.cast_as_hash([:test, :sample])).to eq({})
+        expect(SimpleModel.cast_as_hash([[:test, :sample]])).to eq(test: :sample)
+      end
+    end
+
+    describe 'array' do
+      it '数列を返すこと' do
+        expect(SimpleModel.cast_as_array('sample')).to eq ['sample']
+        expect(SimpleModel.cast_as_array(14)).to eq [14]
+        expect(SimpleModel.cast_as_array(test: :hash)).to eq [[:test, :hash]]
+        expect(SimpleModel.cast_as_array([:test, :sample])).to eq [:test, :sample]
+      end
+    end
+
     describe 'boolean' do
       it 'TrueClassかFalseClassを返すこと' do
         expect(SimpleModel.cast_as_boolean('sample')).to be true
