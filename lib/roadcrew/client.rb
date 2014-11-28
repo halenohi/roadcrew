@@ -1,8 +1,13 @@
 require 'roadcrew/connection'
+require 'roadcrew/client_property'
 
 module Roadcrew
   module Client
     extend ActiveSupport::Concern
+
+    included do
+      include Roadcrew::ClientProperty
+    end
 
     module ClassMethods
       attr_reader :garage_client
@@ -56,19 +61,6 @@ module Roadcrew
       end
     end
 
-    def initialize(args = {})
-      @params = {}
-      if args.respond_to? :each
-        args.each do |key, value|
-          @params[key] = value
-          self.class.module_eval do
-            define_method(key) { @params[key] } unless method_defined?(key)
-            define_method("#{ key }=") { |val| @params[key] = val } unless method_defined?("#{ key }=")
-          end
-        end
-      end
-    end
-
     def garage_client
       self.class.garage_client
     end
@@ -87,10 +79,6 @@ module Roadcrew
 
     def delete
       modelize(garage_client.delete(build_path(id)))
-    end
-
-    def params
-      @params
     end
 
     def modelize(response)
