@@ -20,12 +20,10 @@ module Roadcrew
 
     def method_missing(method, *args)
       options = args[1]
-      if options.is_a?(Hash) && options[:cache_expires_in]
-        cache_expires_in = options[:cache_expires_in]
-      end
+      expires_in = options.try(:[], :cache_expires_in).presence || @cache_expires_in
 
       if REST_ACTIONS.include? method.to_s
-        if defined?(::Rails) && ::Rails.cache && cache_expires_in > -1
+        if defined_rails_cache? && expires_in.to_i > -1
           ::Rails.cache.fetch(cache_key(method, args), cache_options) do
             request_with_access_token(method, args)
           end
@@ -59,6 +57,10 @@ module Roadcrew
 
       def defined_rails_logger?
         defined?(::Rails) && ::Rails.logger
+      end
+
+      def defined_rails_cache?
+        defined?(::Rails) && ::Rails.cache
       end
 
       def mask_password(args)
