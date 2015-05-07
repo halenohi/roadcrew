@@ -3,7 +3,9 @@ require 'spec_helper'
 describe Roadcrew::Connection do
   let(:access_token) { double 'AccessToken' }
   let(:response) { double 'Response' }
-  let(:connection) { Roadcrew::Connection.new(access_token: 'sample_token', endpoint: 'http://example.com/api/') }
+  let(:expires_at) { 2.hours.since.to_i }
+  let(:refresh_token) { 'sample_refresh_token' }
+  let(:connection) { Roadcrew::Connection.new(access_token: 'sample_token', endpoint: 'http://example.com/api/', expires_at: expires_at, refresh_token: 'sample_refresh_token') }
   let(:rails_module) { double('Rails module').as_null_object }
 
   class FakeRailsCache
@@ -14,7 +16,7 @@ describe Roadcrew::Connection do
 
   before do
     allow(OAuth2::AccessToken).to receive(:new)
-      .with(be_kind_of(OAuth2::Client), 'sample_token') { access_token }
+      .with(be_kind_of(OAuth2::Client), 'sample_token', expires_at: expires_at, refresh_token: refresh_token) { access_token }
 
     allow_any_instance_of(Roadcrew::Connection).to receive(:defined_rails_cache?).and_return(true)
     allow(rails_module).to receive(:cache).and_return(FakeRailsCache.new)
@@ -23,6 +25,7 @@ describe Roadcrew::Connection do
 
   describe '#get' do
     it 'OAuth2::AccessTokenに正しい引数を渡すこと' do
+      expect(access_token).to receive(:expired?) { false }
       expect(access_token).to receive(:get).with('/users') { response }
       expect(connection.get('/users')).to eq response
     end
@@ -33,14 +36,25 @@ describe Roadcrew::Connection do
       end
 
       it '例外が発生しないこと' do
+        expect(access_token).to receive(:expired?) { false }
         expect(access_token).to receive(:get).with('/users', cache_expires_in: -1) { response }
         expect(subject).to_not raise_error
+      end
+    end
+
+    context 'access_tokenが期限切れの場合' do
+      it '#refresh!を実行すること' do
+        expect(access_token).to receive(:expired?) { true }
+        expect(access_token).to receive(:refresh!)
+        expect(access_token).to receive(:get).with('/users') { response }
+        expect(connection.get('/users')).to eq(response)
       end
     end
   end
 
   describe '#post' do
     it 'OAuth2::AccessTokenに正しい引数を渡すこと' do
+      expect(access_token).to receive(:expired?) { false }
       expect(access_token).to receive(:post).with('/users/1') { response }
       expect(connection.post('/users/1')).to eq response
     end
@@ -48,6 +62,7 @@ describe Roadcrew::Connection do
 
   describe '#delete' do
     it 'OAuth2::AccessTokenに正しい引数を渡すこと' do
+      expect(access_token).to receive(:expired?) { false }
       expect(access_token).to receive(:delete).with('/users/1') { response }
       expect(connection.delete('/users/1')).to eq response
     end
@@ -55,6 +70,7 @@ describe Roadcrew::Connection do
 
   describe '#patch' do
     it 'OAuth2::AccessTokenに正しい引数を渡すこと' do
+      expect(access_token).to receive(:expired?) { false }
       expect(access_token).to receive(:patch).with('/users/1') { response }
       expect(connection.patch('/users/1')).to eq response
     end
@@ -62,6 +78,7 @@ describe Roadcrew::Connection do
 
   describe '#put' do
     it 'OAuth2::AccessTokenに正しい引数を渡すこと' do
+      expect(access_token).to receive(:expired?) { false }
       expect(access_token).to receive(:put).with('/users/1') { response }
       expect(connection.put('/users/1')).to eq response
     end

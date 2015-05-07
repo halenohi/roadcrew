@@ -12,10 +12,12 @@ module Roadcrew
       @ssl = options[:ssl] || { verify: true }
       @oauth_client = OAuth2::Client.new(@client_id, @client_secret, site: @site, ssl: @ssl)
       @cache_expires_in = options[:cache_expires_in] || 1.hours
+      @expires_at = options[:expires_at]
+      @refresh_token = options[:refresh_token]
     end
 
     def access_token
-      @access_token ||= OAuth2::AccessToken.new(@oauth_client, @token)
+      @access_token ||= OAuth2::AccessToken.new(@oauth_client, @token, expires_at: @expires_at, refresh_token: @refresh_token)
     end
 
     def method_missing(method, *args)
@@ -37,7 +39,9 @@ module Roadcrew
 
     def request_with_access_token(method, args)
       log(method, args)
+      access_token.refresh! if access_token.expired?
       access_token.send(method, *args)
+    rescue => e
     end
 
     private
