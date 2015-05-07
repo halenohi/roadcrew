@@ -11,4 +11,8 @@ Roadcrew.configure do
     endpoint: 'https://staart-scheduler.herokuapp.com',
     access_token: ENV['STAART_SCHEDULER_ACCESS_TOKEN']
   }
+  garage twitter: {
+    endpoint: 'https://staart-twitter.herokuapp.com',
+    access_token: ENV['STAART_TWITTER_ACCESS_TOKEN']
+  }
 end
